@@ -1,0 +1,47 @@
+<div class="col-lg-12 topic-box mt-3" *ngIf="topic">
+    <div class="topic-data col-lg-9 float-left">
+        <h1>{{topic.title}}</h1>
+        <span class="badge badge-warning mr-2" *ngIf="topic.lang">
+            {{topic.lang}}
+        </span>
+        <span class="badge badge-light mr-2">
+            {{topic.date | amLocale:'es' | amTimeAgo}}
+        </span>
+        <span class="badge badge-primary">
+            {{topic.user.name + ' ' + topic.user.surname}}
+        </span>
+        <hr>
+        <p id="topic-content">{{topic.content}}</p>
+        <p id="topic-code" *ngIf="topic.code && topic.lang">
+            <ngx-highlight-js lang="{{topic.lang}}" code="{{topic.code}}"></ngx-highlight-js>
+        </p>
+    </div>
+    <div class="clear-fix"></div>
+    <div id="comment-box" class="col-lg-9 mt-3">
+        <h3>Commentarios</h3>
+        <hr>
+
+        <ul class="list-group mb-2">
+            <li class="list-group-item" *ngFor="let comment of topic.comments">
+                <span class="badge badge-primary mr-2">
+                    {{comment.user.name + ' ' + comment.user.surname}}
+                </span>
+                <span class="badge badge-light float-right">
+                    {{comment.date | amLocale:'es' | amTimeAgo}}
+                </span>
+                <div class="clear-fix"></div>
+                {{comment.content}}
+                <a class="btn btn-sm btn-danger float-right" *ngIf="identity._id == comment.user._id" (click)="deleteComment(comment._id)">Borrar</a>
+            </li>
+        </ul>
+        <form #comentForm="ngForm" (ngSubmit)="onSubmit(comentForm)" *ngIf="identity">
+            <div class="form-group">
+                <label for="content">Comentario</label>
+                <textarea type="text" name="content" class="form-control" #content="ngModel" [(ngModel)]="comment.content"></textarea>
+                <small *ngIf="!content.valid && content.touched" class="invalid-feedback d-block">El campo no es
+                    valido</small>
+            </div>
+            <input type="submit" value="Comentar" class="btn btn-md btn-success" [disabled]="comentForm.invalid">
+        </form>
+    </div>
+</div>
